@@ -1,29 +1,43 @@
 from django.db import models
-from datetime import date
 
 
-class Project(models.Model):
+class TimeStampedModel(models.Model):
+    """
+    Модель абстрактного базового класса, обеспечивающая самообновление создаваемых и обновляемых полей.
+    """
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class Project(TimeStampedModel):
+    """
+   Представляет проект.
+    """
     name_project = models.CharField(max_length=100, verbose_name="Наименование проекта")
-    description_project = models.TextField(verbose_name="Описание проекта")
-    date_created = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления")
-    date_updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления статуса")
-
-    STATUS_CHOICES = (
+    description = models.TextField(verbose_name="Описание проекта")
+    status = models.CharField(max_length=100, choices=(
         ('в разработке', 'В разработке'),
         ('Завершено', 'Завершено')
-    )
-
-    status = models.CharField(max_length=100, choices=STATUS_CHOICES, verbose_name="Статус")
-
-    STARS_CHOICES = [(i, str(i)) for i in range(1, 11)]
-
-    stars = models.IntegerField(default=0, choices=STARS_CHOICES, verbose_name="Оценки")
+    ), verbose_name="Статус")
+    stars = models.IntegerField(default=0, choices=[(i, str(i)) for i in range(1, 11)], verbose_name="Оценки")
 
     def __str__(self):
         return self.name_project
 
+    class Meta:
+        verbose_name = 'Проект'
+        verbose_name_plural = 'Проекты'
+        ordering = ['name_project']
+        unique_together = ('name_project', 'date_created')
 
-class Client(models.Model):
+
+class Client(TimeStampedModel):
+    """
+   Представляет клиента проекта
+    """
     name_organization = models.CharField(max_length=100, verbose_name="Наименование организации")
     name_client = models.CharField(max_length=100, verbose_name="ФИО")
     project = models.ForeignKey(Project, verbose_name="Проект", on_delete=models.CASCADE, null=True, blank=True)
@@ -32,17 +46,12 @@ class Client(models.Model):
     country = models.CharField(max_length=100, verbose_name="Страна")
     phone = models.CharField(max_length=100, verbose_name="Телефон")
     email = models.CharField(max_length=100, verbose_name="E-mail")
-    date_created = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления")
-    date_updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления статуса")
-
-    STATUS_CHOICES = (
+    status = models.CharField(max_length=100, choices=(
         ('В разработке', 'В разработке'),
         ('Стадия переговоров', 'Стадия переговоров'),
         ('Завершено', 'Завершено'),
         ('Отказ', 'Отказ')
-    )
-
-    status = models.CharField(max_length=100, choices=STATUS_CHOICES, verbose_name="Статус")
+    ), verbose_name="Статус")
 
     def __str__(self):
         return self.name_client

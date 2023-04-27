@@ -1,17 +1,12 @@
-from django.shortcuts import render
-from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet, ModelViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from .models import Client, Project
 from .serializers import ClientSerializer, ProjectSerializer
 
 
-class ProjectViewSet(ModelViewSet):
-    queryset = Project.objects.all()
-    serializer_class = ProjectSerializer
-
+class CreateUpdateViewSetMixin:
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -28,13 +23,11 @@ class ProjectViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
 
-class ClientViewSet(ModelViewSet):
+class ProjectViewSet(CreateUpdateViewSetMixin, ModelViewSet):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+
+
+class ClientViewSet(CreateUpdateViewSetMixin, ModelViewSet):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
