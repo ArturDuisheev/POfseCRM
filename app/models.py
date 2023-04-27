@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import date
 
 
 class Project(models.Model):
@@ -8,8 +9,8 @@ class Project(models.Model):
     date_updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления статуса")
 
     STATUS_CHOICES = (
-        (1, 'В разработке'),
-        (2, 'Завершено')
+        ('в разработке', 'В разработке'),
+        ('Завершено', 'Завершено')
     )
 
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, verbose_name="Статус")
@@ -18,11 +19,14 @@ class Project(models.Model):
 
     stars = models.IntegerField(default=0, choices=STARS_CHOICES, verbose_name="Оценки")
 
+    def __str__(self):
+        return self.name_project
+
 
 class Client(models.Model):
     name_organization = models.CharField(max_length=100, verbose_name="Наименование организации")
     name_client = models.CharField(max_length=100, verbose_name="ФИО")
-    project = models.ForeignKey(Project, verbose_name="Проект", on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, verbose_name="Проект", on_delete=models.CASCADE, null=True, blank=True)
     address = models.CharField(max_length=100, verbose_name="Адрес")
     city = models.CharField(max_length=100, verbose_name="Город")
     country = models.CharField(max_length=100, verbose_name="Страна")
@@ -32,10 +36,10 @@ class Client(models.Model):
     date_updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления статуса")
 
     STATUS_CHOICES = (
-        (1, 'В разработке'),
-        (2, 'Стадия переговоров'),
-        (3, 'Завершено'),
-        (4, 'Отказ')
+        ('В разработке', 'В разработке'),
+        ('Стадия переговоров', 'Стадия переговоров'),
+        ('Завершено', 'Завершено'),
+        ('Отказ', 'Отказ')
     )
 
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, verbose_name="Статус")

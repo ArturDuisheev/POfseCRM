@@ -1,7 +1,6 @@
 media
 pycache
 # Byte-compiled / optimized / DLL files
-pycache
 pycache/
 *.py[cod]
 *$py.class
