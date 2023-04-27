@@ -1,35 +1,31 @@
 from rest_framework import serializers
 
-from .models import User, EmployeeRegister
+from account.models import User, POSITION
 
 
-class EmployeeRegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(min_length=8, max_length=16)
-    position = serializers.ChoiceField(choices=[
-        (1, 'Back-end Developer'),
-        (2, 'Front-end Developer'),
-        (3, 'UX/UI Designer'),
-        (4, 'Marketing specialist'),
-        (5, 'Sales manager'),
-        (6, 'HR manager'),
-        (7, 'Product manager'),
-        (8, 'Project manager'),
-        (9, 'CEO, founders'),
-        (10, 'others')
-
-    ], default=1)
+class UserRegisterSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True, write_only=True)
+    position = serializers.ChoiceField(choices=POSITION)
+    password = serializers.CharField(max_length=128, min_length=8, write_only=True)
+    password2 = serializers.CharField(max_length=128, min_length=8, write_only=True)
 
     class Meta:
-        model = EmployeeRegister
-        fields = ['user', 'email', 'password', 'position']
-        extra_kwargs = {"password": {"write_only": True}}
+        model = User
+        fields = 'id email position is_active is_staff is_superuser password password2'.split()
+
+    def validate_email(self, email):
+        if User.objects.filter(email=email).exists():
+            raise serializers.ValidationError('Данная электронная почта уже используется!')
+        return email
 
     def create(self, validated_data):
-        user = User(
-            username=validated_data['username'],
-            email=validated_data['email']
-        )
-        user.set_password(validated_data['password'])
+        password = validated_data.pop('password')
+        password2 = validated_data.pop('password2')
+        if password != password2:
+            raise serializers.ValidationError({'password': 'Пароли не совпадают!'})
+        user = User.objects.create(**validated_data)
+        user.set_password(password)
         user.save()
-
         return user
+
+

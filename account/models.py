@@ -1,7 +1,9 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    PermissionsMixin,
+)
 from django.db import models
-
-User = get_user_model()
+from account.managers import CustomUserManager
 
 POSITION = [
     (1, 'Back-end Developer'),
@@ -16,8 +18,23 @@ POSITION = [
     (10, 'others')]
 
 
-class EmployeeRegister(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    position = models.IntegerField(choices=POSITION, default=1)
-    password = models.CharField(max_length=18)
-    email = models.EmailField()
+class User(AbstractBaseUser, PermissionsMixin):
+    id = models.AutoField(primary_key=True, unique=True)
+    email = models.EmailField(max_length=255, unique=True, verbose_name="Почта")
+    position = models.CharField(choices=POSITION, default=10, blank=False, null=False, max_length=10)
+    is_active = models.BooleanField(default=True, verbose_name="Активность")
+    is_staff = models.BooleanField(default=False, verbose_name="Менеджер")
+    is_superuser = models.BooleanField(default=False, verbose_name="Суперпользователь")
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    objects = CustomUserManager()
+
+    class Meta:
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
+
+    def __str__(self):
+        return self.email
+
