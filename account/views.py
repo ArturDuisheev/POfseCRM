@@ -13,7 +13,7 @@ class RegisterUserAPIView(CreateAPIView):
     """
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
-    permission_classes = (permissions.IsAdminUser, )
+    permission_classes = (permissions.IsAdminUser,)
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -29,5 +29,3 @@ class RegisterUserAPIView(CreateAPIView):
             data = serializer.errors
             return Response({"message": "Что-то пошло не так!",
                              "data": data})
-
-
