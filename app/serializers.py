@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from .models import Project, Client
 
 
@@ -12,4 +11,6 @@ class ProjectSerializer(serializers.ModelSerializer):
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
-        fields = '__all__'
+        fields = ('id', 'name_organization', 'name_client', 'project', 'address', 'city', 'country', 'phone', 'email',
+                  'status')
+        read_only_fields = ('id', )
