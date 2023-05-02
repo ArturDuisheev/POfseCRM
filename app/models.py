@@ -18,6 +18,13 @@ class Project(models.Model):
 
     stars = models.IntegerField(default=0, choices=STARS_CHOICES, verbose_name="Оценки")
 
+    class Meta:
+        verbose_name = 'Наименование проекта'
+        verbose_name_plural = 'Наименование проектов'
+
+    def __str__(self):
+        return self.name_project
+
 
 class Client(models.Model):
     name_organization = models.CharField(max_length=100, verbose_name="Наименование организации")
