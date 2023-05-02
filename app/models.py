@@ -6,7 +6,7 @@ class TimeStampedModel(models.Model):
     Модель абстрактного базового класса, обеспечивающая самообновление создаваемых и обновляемых полей.
     """
     date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
+    # date_updated = models.DateTimeField()
 
     class Meta:
         abstract = True
@@ -24,14 +24,14 @@ class Project(TimeStampedModel):
     ), verbose_name="Статус")
     stars = models.IntegerField(default=0, choices=[(i, str(i)) for i in range(1, 11)], verbose_name="Оценки")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name_project
 
     class Meta:
         verbose_name = 'Проект'
         verbose_name_plural = 'Проекты'
-        ordering = ['name_project']
-        unique_together = ('name_project', 'date_created')
+        ordering = 'id name_project'.split()
+        unique_together = 'id name_project date_created'.split()
 
 
 class Client(TimeStampedModel):
@@ -52,8 +52,9 @@ class Client(TimeStampedModel):
         ('Завершено', 'Завершено'),
         ('Отказ', 'Отказ')
     ), verbose_name="Статус")
+    keyword = models.CharField(max_length=100, verbose_name="Ключевое слово", null=True, blank=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name_client
 
     class Meta:
