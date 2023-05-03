@@ -1,3 +1,6 @@
+from django.utils import timezone
+
+from django.contrib.sites import requests
 from django.db import models
 
 
@@ -7,6 +10,10 @@ class TimeStampedModel(models.Model):
     """
     date_created = models.DateTimeField(auto_now_add=True)
     # date_updated = models.DateTimeField()
+
+    def save(self, *args, **kwargs):
+        self.date_updated = timezone.now()
+        super(TimeStampedModel, self).save(*args, **kwargs)
 
     class Meta:
         abstract = True
@@ -19,12 +26,39 @@ class Project(TimeStampedModel):
     name_project = models.CharField(max_length=100, verbose_name="Наименование проекта")
     description = models.TextField(verbose_name="Описание проекта")
     status = models.CharField(max_length=100, choices=(
+        ("Стадия переговоров", "Стадия переговоров"),
         ('в разработке', 'В разработке'),
         ('Завершено', 'Завершено')
     ), verbose_name="Статус")
+    currency_tuple = (
+        ('USD', 'USD'),
+        ('EUR', 'EUR'),
+        ('RUB', 'RUB'),
+        ('KGS', 'KGS'),
+    )
+    currency = models.CharField(max_length=3, choices=currency_tuple, verbose_name="Валюта")
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Сумма")
     stars = models.IntegerField(default=0, choices=[(i, str(i)) for i in range(1, 11)], verbose_name="Оценки")
 
-    def __str__(self) -> str:
+    def convert_to_som(amount):
+        api_key = 'https://openexchangerates.org/api/latest.json?app_id=889c94c4a270499ca3c5cdd9f71e4d8b&base=GBP' \
+                  '&callback=someCallbackFunctionа'
+        url = 'https://openexchangerates.org/api/latest.json?app_id=889c94c4a270499ca3c5cdd9f71e4d8b' + api_key
+        response = requests.get(url)
+        if response.status_code == 200:
+            rates = response.json()['rates']
+            usd_to_som_rate = rates.get('KGS', 1) / rates.get('USD', 1)
+            return round(amount * usd_to_som_rate, 2)
+        else:
+            return None
+
+    def converted_amount(self):
+        if self.currency == 'USD':
+            return self.convert_to_som(self.amount)
+        else:
+            return self.amount
+
+    def __str__(self):
         return self.name_project
 
     class Meta:
@@ -33,12 +67,6 @@ class Project(TimeStampedModel):
         ordering = 'id name_project'.split()
         unique_together = 'id name_project date_created'.split()
 
-    class Meta:
-        verbose_name = 'Наименование проекта'
-        verbose_name_plural = 'Наименование проектов'
-
-    def __str__(self):
-        return self.name_project
 
 
 class Client(TimeStampedModel):

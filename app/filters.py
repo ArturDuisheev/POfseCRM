@@ -1,4 +1,5 @@
 import django_filters
+from django_filters import rest_framework as filters
 
 from .models import Client
 
@@ -11,23 +12,14 @@ class ClientFilter(django_filters.FilterSet):
         fields = ('keyword',)
 
 
-"""Доработать filters(Artur)"""
+class ClientFilter(filters.FilterSet):
+    keyword = filters.CharFilter(field_name='name_organization', lookup_expr='icontains')
 
+    class Meta:
+        model = Client
+        fields = ['keyword']
 
-# field_names = 'name_client', 'name_organization'.join(" ")
+        ordering = ['name_organization']
 
-# class ClientFilter(filters.FilterSet):
-#     name_organization = filters.CharFilter(field_name='name_organization')
-#     name_client = filters.CharFilter(field_name='name_client')
-#     keyword = filters.CharFilter(field_name=field_names, method='custom_filter', lookup_expr='icontains')
-#
-#     class Meta:
-#         model = Client
-#         fields = ['name_organization', 'name_client']
-#         filterset_method = 'custom_filter'
-#
-#     def custom_filter(self, queryset, name, value):
-#         return queryset.filter(
-#             Q(name_organization__icontains=value) |
-#             Q(name_client__icontains=value)
-#         )
+        def custom_search(self, queryset, name, value):
+            return queryset.filter(name_organization__icontains=value)

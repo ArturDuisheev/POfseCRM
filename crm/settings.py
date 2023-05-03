@@ -1,5 +1,6 @@
 
 from pathlib import Path
+import pytz
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,14 +19,11 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 
-<<<<<<< HEAD
-=======
 APPS = [
     'account',
     'app',
 ]
 
->>>>>>> 6b20bd34a3023f492a43ca8125e1bf0baacaa042
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -33,14 +31,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework_simplejwt',
+    'django_filters',
     'rest_framework',
-<<<<<<< HEAD
+
     'account',
     'app'
-]
-=======
+    'channels',
+    'account',
+    'pytz',
+    'chat',
+    'app'
+
 ] + APPS
->>>>>>> 6b20bd34a3023f492a43ca8125e1bf0baacaa042
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -54,6 +58,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'crm.urls'
 
+REST_FRAMEWORK = {
+
+    'DATETIME_FORMAT': "%Y-%m-%dT%H:%M:%S.%fZ",
+    'DEFAULT_TIME_ZONE': 'Asia/Bishkek',
+}
 
 TEMPLATES = [
     {
@@ -84,7 +93,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -109,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Bishkek'
 
 USE_I18N = True
 
