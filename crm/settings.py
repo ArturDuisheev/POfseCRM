@@ -13,7 +13,6 @@ ALLOWED_HOSTS = ['*']
 APPS = [
     'account',
     'app',
-    ''
 ]
 
 INSTALLED_APPS = [
@@ -31,7 +30,8 @@ INSTALLED_APPS = [
     'pytz',
     'chat',
     'app'
-]
+
+] + APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

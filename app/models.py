@@ -67,6 +67,13 @@ class Project(TimeStampedModel):
         ordering = ['name_project']
         unique_together = ('name_project', 'date_created')
 
+    class Meta:
+        verbose_name = 'Наименование проекта'
+        verbose_name_plural = 'Наименование проектов'
+
+    def __str__(self):
+        return self.name_project
+
 
 class Client(TimeStampedModel):
     """
