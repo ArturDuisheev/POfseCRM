@@ -1,11 +1,9 @@
 media
 pycache
 # Byte-compiled / optimized / DLL files
-pycache
 pycache/
 *.py[cod]
 *$py.class
-
 # C extensions
 *.so
 
@@ -62,6 +60,11 @@ coverage.xml
 *.log
 local_settings.py
 db.sqlite3
+app/migrations
+account/migrations/
+account/migrations/0001_initial.py
+app/migrations/0001_initial.py
+chat/migrations/
 db.sqlite3-journal
 
 # Flask stuff:

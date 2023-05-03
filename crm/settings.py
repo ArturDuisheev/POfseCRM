@@ -1,12 +1,12 @@
 from datetime import timedelta
 from pathlib import Path
+import pytz
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 AUTH_USER_MODEL = "account.User"
 SECRET_KEY = 'django-insecure-n9v#r4w#40v$5px!q+&$p_40!&n3@&ru0-0xw2n1amdk!qi3$m'
 DEBUG = True
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -23,9 +23,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework_simplejwt',
+    'django_filters',
     'rest_framework',
-    ''
-] + APPS
+    'channels',
+    'account',
+    'pytz',
+    'chat',
+    'app'
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -39,6 +45,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'crm.urls'
 
+REST_FRAMEWORK = {
+
+    'DATETIME_FORMAT': "%Y-%m-%dT%H:%M:%S.%fZ",
+    'DEFAULT_TIME_ZONE': 'Asia/Bishkek',
+}
 
 TEMPLATES = [
     {
@@ -57,7 +68,13 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'crm.wsgi.application'
+ASGI_APPLICATION = 'myproject.routing.application'
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -68,7 +85,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -90,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Bishkek'
 
 USE_I18N = True
 
