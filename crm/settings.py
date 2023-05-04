@@ -19,10 +19,6 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 
-APPS = [
-    'account',
-    'app',
-]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -34,16 +30,15 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'django_filters',
     'rest_framework',
+    'drf_yasg',
 
     'account',
-    'app'
+    'app',
     'channels',
-    'account',
     'pytz',
     'chat',
-    'app'
 
-] + APPS
+]
 
 
 MIDDLEWARE = [
