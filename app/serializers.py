@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Project, Client, TimeStampedModel
+from .models import Project, Client
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -8,12 +8,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = 'name_project description status stars date_created'.split()
-
-        read_only_fields = ('id', 'date_created')
-        extra_kwargs = {
-            'date_created': {'read_only': True},
-        }
+        fields = 'name_project description status currency amount stars date_created date_updated'.split()
 
 
 class ClientSerializer(serializers.ModelSerializer):

@@ -1,15 +1,6 @@
-import django_filters
 from django_filters import rest_framework as filters
 
 from .models import Client
-
-
-class ClientFilter(django_filters.FilterSet):
-    keyword = django_filters.CharFilter(lookup_expr='icontains')
-
-    class Meta:
-        model = Client
-        fields = ('keyword',)
 
 
 class ClientFilter(filters.FilterSet):
